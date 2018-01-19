@@ -3,11 +3,77 @@
     <head>
         <meta charset="UTF-8" />
         <title>{% block title %}Welcome!{% endblock %}</title>
-        {% block stylesheets %}{% endblock %}
-        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+        {% block stylesheets %}
+            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+        {% endblock %}
     </head>
     <body>
-        {% block body %}{% endblock %}
+
+        <nav class="navbar navbar-default">
+          <div class="container-fluid">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="/">
+                        <img src="{{ asset('images/hnlogo.jpg') }}" width="30" height="30" alt="">
+                    </a>
+                </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse">
+
+                {% if app.user %}
+                <ul class="nav navbar-nav">
+                    {% if app.request.get('_route') == "homepage" %}
+                        <li class="active"><a href="{{ path("homepage") }}">Most recent</a></li>
+                        <li><a href="{{ path("top_rated") }}">Top rated</a></li>
+                        <li><a href="{{ path("new_topic") }}">Create new topic</a></li>
+                    {% elseif app.request.get('_route') == "top_rated" %}
+                        <li><a href="{{ path("homepage") }}">Most recent</a></li>
+                        <li class="active"><a href="{{ path("top_rated") }}">Top rated</a></li>
+                        <li><a href="{{ path("new_topic") }}">Create new topic</a></li>
+                    {% elseif app.request.get('_route') == "new_topic" %}
+                        <li><a href="{{ path("homepage") }}">Most recent</a></li>
+                        <li><a href="{{ path("top_rated") }}">Top rated</a></li>
+                        <li class="active"><a href="{{ path("new_topic") }}">Create new topic</a></li>
+                    {% else %}
+                        <li><a href="{{ path("homepage") }}">Most recent</a></li>
+                        <li><a href="{{ path("top_rated") }}">Top rated</a></li>
+                    {% endif %}
+                </ul>
+                {% endif %}
+
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                    {% if app.user %}
+                        <a href="{{ path('security_logout') }}">Logout</a>
+                    {% endif %}
+                    </li>
+                </ul>
+            </div>
+          </div>  
+        </nav>
+
+
+        <div style="margin-top: 40px" class="container">
+
+
+            {% for label, messages in app.flashes %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ label }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endfor %}
+            
+            {% if error is defined %}
+                {% if error %}
+                    <div class="alert alert-danger">
+                        {{ error.messageKey|trans(error.messageData, 'security') }}
+                    </div>
+                {% endif %}
+            {% endif %}
+    
+            {% block body %}{% endblock %}
+        </div>
         {% block javascripts %}{% endblock %}
     </body>
 </html>

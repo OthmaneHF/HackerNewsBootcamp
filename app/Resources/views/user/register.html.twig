@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <h2>Please Sign up</h2>
+
+    {{ form_start(RegisterForm) }}
+
+        {{ form_row(RegisterForm.email) }}
+        {{ form_row(RegisterForm.plainPassword.first) }}
+        {{ form_row(RegisterForm.plainPassword.second) }}
+
+        <button type="submit" class="btn btn-success">Sign up <span class="fa fa-lock"></span></button>
+
+    {{ form_end(RegisterForm) }}
+
+  </form>
+
+{% endblock %}
