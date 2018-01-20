@@ -15,14 +15,20 @@ class CommentRepository extends \Doctrine\ORM\EntityRepository
     public function createNewCommentFromForm($user,$formData)
     {
 
-		$newComment = $formData;
-		$newComment->setUser($user);
+  		try {
 
-        $em = $this->getEntityManager();
-        $em->persist($newComment);
-        $em->flush();
+			$newComment = $formData;
+			$newComment->setUser($user);
 
-        return $newComment;
+		    $em = $this->getEntityManager();
+		    $em->persist($newComment);
+		    $em->flush();
+
+        	return $newComment;
+
+		} catch(ORMException $e) {
+		    throw new ORMException('Can\'t insert entity.')
+		}
     }
 
 }

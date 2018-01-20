@@ -29,7 +29,7 @@ services:
         public: true
         tags: ['controller.service_arguments']
 
-    # add more services, or override services that need manual wiring
+    # Listener service to handle users logging out
     app.logout.handler:
         class: AppBundle\Listener\LogoutHandler
 
@@ -37,6 +37,12 @@ services:
         class: AppBundle\Repository\UserRepository
         factory: 'doctrine.orm.entity_manager:getRepository'
         arguments: ['AppBundle\Entity\User']
+
+    # Listener service to handle exceptions
+    AppBundle\Listener\ExceptionListener:
+        arguments: ["@router", "@session"]
+        tags:
+            - { name: kernel.event_listener, event: kernel.exception }
     #     arguments:
     #         $someArgument: 'some_value'
     

@@ -2,6 +2,8 @@
 
 namespace AppBundle\Repository;
 
+use Doctrine\ORM\ORMException;
+
 /**
  * TopicRepository
  *
@@ -14,14 +16,21 @@ class TopicRepository extends \Doctrine\ORM\EntityRepository
     public function createNewTopicFromForm($user,$formData)
     {
 
-		$newTopic = $formData;
-		$newTopic->setUser($user);
+  		try {
 
-        $em = $this->getEntityManager();
-        $em->persist($newTopic);
-        $em->flush();
+			$newTopic = $formData;
+			$newTopic->setUser($user);
 
-        return $newTopic;
+	        $em = $this->getEntityManager();
+	        $em->persist($newTopic);
+	        $em->flush();
+        	
+        	return $newTopic;
+
+		} catch(ORMException $e) {
+		    throw new ORMException('Can\'t insert entity.');
+		}
+
     }
 
 

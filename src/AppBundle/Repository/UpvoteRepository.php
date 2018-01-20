@@ -3,6 +3,7 @@
 namespace AppBundle\Repository;
 
 use AppBundle\Entity\Upvote;
+use AppBundle\Exception\UpvoteExistsException;
 
 /**
  * UpvoteRepository
@@ -20,21 +21,19 @@ class UpvoteRepository extends \Doctrine\ORM\EntityRepository
                 array('user' => $user->getId(), 'topic' => $topic->getId())
             );
 
-        if(!$existingUpvote)
+        if($existingUpvote)
         {
+            throw new UpvoteExistsException("You have already upvoted this topic.");
+        }
 
-            $newUpvote = new Upvote;
-            $newUpvote->setUser($user);
-            $newUpvote->setTopic($topic);
+        $newUpvote = new Upvote;
+        $newUpvote->setUser($user);
+        $newUpvote->setTopic($topic);
 
-            $em = $this->getEntityManager();
-            $em->persist($newUpvote);
-            $em->flush();
+        $em = $this->getEntityManager();
+        $em->persist($newUpvote);
+        $em->flush();
 
-            return true;
-         }
-
-        return false;
     }
 
 }
