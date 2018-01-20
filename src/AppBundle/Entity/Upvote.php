@@ -15,7 +15,7 @@ use Doctrine\ORM\Mapping\PreUpdate;
  *
  * @ORM\Table(name="upvote")
  * @ORM\HasLifecycleCallbacks()
- * @ORM\Entity(repositoryClass="AppBundle\Repository\TopicRepository")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\UpvoteRepository")
  */
 class Upvote
 {

@@ -10,4 +10,19 @@ namespace AppBundle\Repository;
  */
 class CommentRepository extends \Doctrine\ORM\EntityRepository
 {
+
+
+    public function createNewCommentFromForm($user,$formData)
+    {
+
+		$newComment = $formData;
+		$newComment->setUser($user);
+
+        $em = $this->getEntityManager();
+        $em->persist($newComment);
+        $em->flush();
+
+        return $newComment;
+    }
+
 }

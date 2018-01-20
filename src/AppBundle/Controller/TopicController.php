@@ -28,17 +28,15 @@ class TopicController extends Controller
 
     	if($newTopicForm->isSubmitted() && $newTopicForm->isValid())
     	{
-    		$newTopic = $newTopicForm->getData();
-    		$newTopic->setUser($this->getUser());
-
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($newTopic);
-            $em->flush();
+            $newTopic =  $this->getDoctrine()
+            ->getRepository(Topic::class)
+            ->createNewTopicFromForm($this->getUser(),$newTopicForm->getData());
 
             $this->addFlash("success","Your topic has ben successfully created.");
 
             return $this->redirectToRoute('homepage');
     	}
+
     	return $this->render('topic/new.html.twig',[
     		'newTopicForm' => $newTopicForm->createView()
     	]);
@@ -65,33 +63,24 @@ class TopicController extends Controller
     public function upvoteAction(Topic $topic, Request $request)
     {
 
-        $existingUpvote =  $this->getDoctrine()
+        $addUpvote =  $this->getDoctrine()
             ->getRepository(Upvote::class)
-            ->findOneBy(
-                array('user' => $this->getUser()->getId(), 'topic' => $topic->getId())
-            );
+            ->AddIfNotExists($topic, $this->getUser());
 
-        if(!$existingUpvote)
+        if(!$addUpvote)
         {
-
-            $newUpvote = new Upvote;
-            $newUpvote->setUser($this->getUser());
-            $newUpvote->setTopic($topic);
-
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($newUpvote);
-            $em->flush();
-
-            $this->addFlash("success","Your upvote has been registered.");
+            $this->addFlash("danger","Your have already upvoted this topic.");
 
             return $this->redirect($request->headers->get('referer'));
+
         }
 
-        $this->addFlash("danger","Your have already upvoted this topic.");
+        $this->addFlash("success","Your upvote has been registered.");
 
         return $this->redirect($request->headers->get('referer'));
-
     }
+
+
   /**
      * @Route("/topic/{id}/comment/", name="new_comment")
      * @ParamConverter("topic", class="AppBundle:Topic")
@@ -108,16 +97,13 @@ class TopicController extends Controller
 
         if($newCommentForm->isSubmitted() && $newCommentForm->isValid())
         {
-            $comment = $newCommentForm->getData();
-            $comment->setUser($this->getUser());
-
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($comment);
-            $em->flush();
+            $newComment =  $this->getDoctrine()
+            ->getRepository(Comment::class)
+            ->createNewCommentFromForm($this->getUser(),$newCommentForm->getData());
 
             $this->addFlash("success","Your commented has ben successfully added.");
 
-            return $this->redirectToRoute('view_topic',['id' => $id]);
+            return $this->redirectToRoute('view_topic',['id' => $topic->getId()]);
         }
         return $this->render('topic/comment.html.twig',[
             'newCommentForm' => $newCommentForm->createView()

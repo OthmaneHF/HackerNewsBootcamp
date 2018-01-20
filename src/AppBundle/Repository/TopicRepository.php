@@ -11,6 +11,20 @@ namespace AppBundle\Repository;
 class TopicRepository extends \Doctrine\ORM\EntityRepository
 {
 
+    public function createNewTopicFromForm($user,$formData)
+    {
+
+		$newTopic = $formData;
+		$newTopic->setUser($user);
+
+        $em = $this->getEntityManager();
+        $em->persist($newTopic);
+        $em->flush();
+
+        return $newTopic;
+    }
+
+
     public function findByCreatedAtOrder($order)
     {
         return $this->findBy(array(), array('createdAt' => $order));

@@ -193,6 +193,17 @@ class Topic
         return $this->updatedAt;
     }
 
+
+    /**
+     * Get updatedAt
+     *
+     * @return [upvotes]
+     */
+    public function getUpvotes(){
+        return $this->upvotes;
+    }
+    
+
     public function getUpvotesCount(){
         return count($this->upvotes);
     }
