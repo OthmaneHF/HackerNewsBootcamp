@@ -24,6 +24,7 @@ class MainController extends Controller
                         ->findByCreatedAtOrder('ASC');
 
         $paginator  = $this->get('knp_paginator');
+        
         $pagination = $paginator->paginate(
             $latest_topics,
             $request->query->getInt('page', 1),
