@@ -7,6 +7,7 @@ use AppBundle\Entity\Topic;
 use AppBundle\Entity\Upvote;
 use AppBundle\Form\CommentFormType;
 use AppBundle\Form\TopicFormType;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -46,22 +47,11 @@ class TopicController extends Controller
 
     /**
      * @Route("/topic/{id}", name="view_topic")
+     * @ParamConverter("topic", class="AppBundle:Topic")
      * @Security("has_role('ROLE_USER')")
      */
-    public function viewAction($id)
+    public function viewAction(Topic $topic)
     {
-        
-        $topic = $this->getDoctrine()
-            ->getRepository(Topic::class)
-            ->find($id);
-
-        if(!$topic)
-        {
-            $this->addFlash("danger","This topic does not exist");
-
-            return $this->redirectToRoute('homepage');
-        }
-
         return $this->render('topic/view.html.twig',[
             'topic' => $topic
         ]);
@@ -69,26 +59,16 @@ class TopicController extends Controller
 
     /**
      * @Route("/topic/upvote/{id}")
+     * @ParamConverter("topic", class="AppBundle:Topic")
      * @Security("has_role('ROLE_USER')")
      */
-    public function upvoteAction($id, Request $request)
+    public function upvoteAction(Topic $topic, Request $request)
     {
-        
-        $topic = $this->getDoctrine()
-            ->getRepository(Topic::class)
-            ->find($id);
-
-        if(!$topic)
-        {
-            $this->addFlash("danger","This topic does not exist");
-
-            return $this->redirectToRoute('homepage');
-        }
 
         $existingUpvote =  $this->getDoctrine()
             ->getRepository(Upvote::class)
             ->findOneBy(
-                array('user' => $this->getUser()->getId(), 'topic' => $id)
+                array('user' => $this->getUser()->getId(), 'topic' => $topic->getId())
             );
 
         if(!$existingUpvote)
@@ -114,21 +94,11 @@ class TopicController extends Controller
     }
   /**
      * @Route("/topic/{id}/comment/", name="new_comment")
+     * @ParamConverter("topic", class="AppBundle:Topic")
      * @Security("has_role('ROLE_USER')")
      */
-    public function commentAction($id, Request $request)
+    public function commentAction(Topic $topic, Request $request)
     {
-        $topic = $this->getDoctrine()
-            ->getRepository(Topic::class)
-            ->find($id);
-
-        if(!$topic)
-        {
-            $this->addFlash("danger","This topic does not exist");
-
-            return $this->redirectToRoute('homepage');
-        }
-
         $comment = new Comment;
         $comment->setTopic($topic);
 

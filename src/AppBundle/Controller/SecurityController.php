@@ -24,9 +24,6 @@ class SecurityController extends Controller
         
         $last_username = $authUtils->getLastUsername();
 
-        #$logger->info('email LOGINATION SESSSION : '.$last_username);
-
-
         $form = $this->createForm(LoginFormType::class,[
             'email' => $last_username
         ]);
