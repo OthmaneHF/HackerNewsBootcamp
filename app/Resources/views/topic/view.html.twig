@@ -2,7 +2,7 @@
 
 {% block body %}
 
-    <div style="padding-bottom: 5px; background-color: rgb(255, 102, 0);" class="container-fluid">
+    <div class="container-fluid top-container">
     	<div style="display: flex; align-items: center;"class="row">
     		<div class="col-sm-11">
     			<h4>{{ topic.title }}</h4>
@@ -13,21 +13,21 @@
 		    </div>
     	</div>
     </div>
-    <div class="container-fluid" style="padding: 15px; background-color: #f6f6ef">
+    <div class="container-fluid main-container extra-padding">
     	{{ topic.message }}
 	</div>
 
-	<div style="margin-top: 15px;" class="text-center">
+	<div class="extra-padding text-center">
 		<a href="/topic/{{ topic.id }}/comment" class="btn btn-primary">Add a new comment</a>
 	</div>
 
-	<h4 style="margin-top: 15px;">Comments</h4>
+	<h4>Comments</h4>
 
 
-    <div class="container-fluid" style="background-color: #f6f6ef">
+    <div class="container-fluid main-container">
     	{% for comment in topic.comments %}
     		
-    		<div style="padding-top: 8px; padding-left: 8px; padding-right: 8px; padding-bottom: 6px; background-color: #f6f6ef" class="container-fluid">	
+    		<div class="container-fluid sub-container">	
 	        	<div class="row">
 	        		{{ comment.user.email }} | {{ comment.createdAt|date('Y-m-d') }}
 	        	</div>
